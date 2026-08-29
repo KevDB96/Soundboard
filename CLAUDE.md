@@ -40,8 +40,10 @@ python -m http.server 8000
 There is no test suite, linter, or build command — it's plain script tags
 loaded directly by index.html.
 
-On first load with no saved state, the app seeds two default profiles, `GM`
-and `Poppy` (see `App.init` in [js/app.js](js/app.js)).
+On first load with no saved state, the app seeds one default profile,
+`Poppy` (see `App.init` in [js/app.js](js/app.js)). A second profile, `GM`,
+was seeded here too until it was removed for now — re-add it with
+`newProfile('GM')` if it comes back.
 
 ## Visual/browser inspection
 

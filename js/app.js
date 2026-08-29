@@ -33,7 +33,7 @@ const App = (() => {
   function init() {
     state = Storage.loadState();
     if (!state || !state.profiles.length) {
-      const profiles = [newProfile('GM'), newProfile('Poppy')];
+      const profiles = [newProfile('Poppy')];
       state = { activeProfileId: profiles[0].id, profiles };
       Storage.saveState(state);
     }
