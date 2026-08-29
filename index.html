@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#12121a" />
+  <title>Soundboard</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="background-layer"></div>
+
+  <header id="app-header">
+    <nav id="profile-tabs" aria-label="Profiles"></nav>
+    <div id="header-actions">
+      <button id="import-sounds-btn" class="icon-btn" title="Import sounds from phone">📂</button>
+      <button id="delete-profile-btn" class="icon-btn danger-icon" title="Delete this profile">🗑</button>
+      <button id="add-profile-btn" class="icon-btn" title="Add profile">+</button>
+      <button id="edit-toggle-btn" class="icon-btn" title="Edit profile">✎</button>
+    </div>
+  </header>
+  <input type="file" id="import-sounds-input" accept="audio/*" multiple webkitdirectory hidden />
+
+  <main id="board-grid" aria-label="Sound buttons"></main>
+
+  <!-- Button editor modal -->
+  <dialog id="button-editor">
+    <form method="dialog" id="button-editor-form">
+      <h2>Edit Button</h2>
+      <label>
+        Label
+        <input type="text" id="btn-label-input" maxlength="24" placeholder="e.g. Air Horn" />
+      </label>
+      <label>
+        Color
+        <input type="color" id="btn-color-input" value="#ff5c5c" />
+      </label>
+      <label class="file-label">
+        Sound file (mp3)
+        <input type="file" id="btn-sound-input" accept="audio/*" />
+      </label>
+      <p id="btn-sound-current" class="hint"></p>
+      <label class="checkbox-label">
+        <input type="checkbox" id="btn-hidden-input" />
+        Hide this button (keeps the sound, just removes it from the board)
+      </label>
+      <div class="dialog-actions">
+        <button type="button" id="btn-clear-sound" class="ghost-btn">Clear sound</button>
+        <button type="button" id="btn-cancel" class="ghost-btn">Cancel</button>
+        <button type="submit" id="btn-save" class="primary-btn">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Profile editor modal -->
+  <dialog id="profile-editor">
+    <form method="dialog" id="profile-editor-form">
+      <h2>Edit Profile</h2>
+      <label>
+        Name
+        <input type="text" id="profile-name-input" maxlength="20" placeholder="e.g. Party" />
+      </label>
+      <label class="file-label">
+        Background image
+        <input type="file" id="profile-bg-input" accept="image/*" />
+      </label>
+      <div class="dialog-actions">
+        <button type="button" id="profile-cancel" class="ghost-btn">Cancel</button>
+        <button type="submit" id="profile-save" class="primary-btn">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
