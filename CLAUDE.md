@@ -10,6 +10,18 @@ background image and a 3x3 grid of tappable buttons; tapping a button plays
 the mp3 assigned to it. Distribution is via "Add to Home Screen" (Android
 Chrome and iOS Safari), not app stores — see README.md for the install steps.
 
+## Deployment
+
+Hosted on GitHub Pages, served from the `master` branch root:
+https://kevdb96.github.io/Soundboard/ (repo:
+https://github.com/KevDB96/Soundboard). There is no CI/build step — pushing
+to `master` is what publishes; GitHub rebuilds Pages automatically on push
+and it's typically live within a minute or two. `.nojekyll` at the repo root
+disables Jekyll processing since this is already plain static HTML/CSS/JS.
+All asset paths in the app are relative (no leading `/`) specifically so
+they resolve correctly under the `/Soundboard/` project-page subpath as well
+as when served from the filesystem root locally.
+
 ## Running it
 
 Must be served over HTTP, not opened as `file://` — the service worker and

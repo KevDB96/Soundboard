@@ -1,5 +1,7 @@
 # Soundboard
 
+**Live**: https://kevdb96.github.io/Soundboard/
+
 A lightweight, installable soundboard PWA. Create multiple profiles, each with
 its own background image and a 3x3 grid of tappable sound buttons. No build
 step, no backend — everything runs from static files and persists in the
