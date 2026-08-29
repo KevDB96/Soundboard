@@ -43,6 +43,18 @@
         <input type="file" id="btn-sound-input" accept="audio/*" />
       </label>
       <p id="btn-sound-current" class="hint"></p>
+      <div id="btn-trim-section" class="trim-section" hidden>
+        <p class="hint">Sound is <span id="trim-duration">0:00</span> long — choose the part to play:</p>
+        <label>
+          Start: <span id="trim-start-label">0:00</span>
+          <input type="range" id="btn-start-input" min="0" max="0" step="0.1" value="0" />
+        </label>
+        <label>
+          End: <span id="trim-end-label">0:00</span>
+          <input type="range" id="btn-end-input" min="0" max="0" step="0.1" value="0" />
+        </label>
+        <button type="button" id="btn-preview-trim" class="ghost-btn">▶ Preview selection</button>
+      </div>
       <label class="checkbox-label">
         <input type="checkbox" id="btn-hidden-input" />
         Hide this button (keeps the sound, just removes it from the board)

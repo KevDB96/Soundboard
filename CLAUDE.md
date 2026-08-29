@@ -75,11 +75,19 @@ plain IIFE attached to `window` (no bundler, no modules):
 - [js/app.js](js/app.js) — the `App` object and the whole data model. State
   shape:
   ```
-  { activeProfileId, profiles: [{ id, name, backgroundKey, buttons: [{ label, color, soundKey, hidden }] }] }
+  { activeProfileId, profiles: [{ id, name, backgroundKey, buttons: [{ label, color, soundKey, hidden, start, end }] }] }
   ```
   A `hidden` button is skipped entirely from the grid outside edit mode (its
   sound/label/color stay intact); inside edit mode it still renders, dimmed
-  and suffixed "(hidden)", so it can be found and un-hidden.
+  and suffixed "(hidden)", so it can be found and un-hidden. `start`/`end`
+  (seconds, `end: null` meaning "play to the natural end") let a button play
+  only part of its assigned file — set via two range sliders in the button
+  editor — without ever modifying the underlying mp3 blob; playback just
+  seeks to `start` and `AudioPlayer` stops it once `currentTime` reaches
+  `end`. The editor probes the file's duration with `AudioPlayer.getDuration`,
+  which works around a real quirk: blob-URL `<audio>` elements often report
+  `duration === Infinity` until something forces a seek, so it seeks to a
+  huge time and back to get the real value before the sliders' `max` is set.
   Blob object URLs are cached in-memory per session (`objectUrlCache`) since
   `URL.createObjectURL` is relatively expensive and blobs don't change often.
 

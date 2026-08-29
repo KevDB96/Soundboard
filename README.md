@@ -38,6 +38,11 @@ Then open the printed URL in a browser.
   label, color, and mp3 file individually, or check "Hide this button" to
   remove it from the board without deleting its sound (it stays visible,
   dimmed, in edit mode so you can bring it back later).
+- In that same editor, once a sound is assigned, drag the Start/End sliders
+  to pick just the part of the file you want the button to play (e.g. only
+  the punchline of a longer clip) and tap "Preview selection" to check it.
+  This doesn't cut or modify the file — it just remembers which part to jump
+  to and stop at during playback.
 - Tap **+** to add a new profile, or the 🗑 icon to delete the current one
   (asks for confirmation; at least one profile always stays).
 - Double-tap a profile tab's name to rename it or change its background

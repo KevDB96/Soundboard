@@ -1,8 +1,11 @@
 // App state, rendering, and event wiring. Data model:
 // state = {
 //   activeProfileId: string,
-//   profiles: [{ id, name, backgroundKey, buttons: [{ label, color, soundKey, hidden }] }]
+//   profiles: [{ id, name, backgroundKey, buttons: [{ label, color, soundKey, hidden, start, end }] }]
 // }
+// start/end are seconds into the sound to play (end: null means play to the
+// natural end) - set via the trim sliders in the button editor. The
+// underlying mp3 is never modified, only played back partially.
 // backgroundKey/soundKey are IndexedDB keys (see storage.js); null when unset.
 const BUTTONS_PER_PROFILE = 9;
 const AUDIO_EXTENSIONS = /\.(mp3|wav|m4a|aac|ogg|oga|flac|wma|opus)$/i;
@@ -15,10 +18,14 @@ const App = (() => {
   let state = null;
   let editMode = false;
   let editingButtonIndex = null;
+  let currentTrimDuration = 0;
+  let currentTrimUrl = null;
+  let trimRequestId = 0; // invalidates a duration probe superseded by a newer setupTrimUI call
+  let pendingSoundObjectUrl = null; // object URL for a newly-picked, not-yet-saved sound file
   const objectUrlCache = new Map(); // blobKey -> object URL, revoked on profile switch
 
   function emptyButton() {
-    return { label: '', color: '#3a3a4a', soundKey: null, hidden: false };
+    return { label: '', color: '#3a3a4a', soundKey: null, hidden: false, start: 0, end: null };
   }
 
   function newProfile(name) {
@@ -143,7 +150,7 @@ const App = (() => {
     void el.offsetWidth; // restart animation
     el.classList.add('pressed');
     const url = await resolveObjectUrl(btn.soundKey);
-    AudioPlayer.play(url);
+    AudioPlayer.play(url, { start: btn.start || 0, end: btn.end });
   }
 
   function wireGlobalControls() {
@@ -194,6 +201,13 @@ const App = (() => {
     return filename.replace(/\.[^/.]+$/, '');
   }
 
+  function formatTime(seconds) {
+    if (!Number.isFinite(seconds)) return '0:00';
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${String(s).padStart(2, '0')}`;
+  }
+
   async function onImportSounds(event) {
     const files = Array.from(event.target.files || []);
     event.target.value = ''; // allow re-picking the same folder/files later
@@ -228,6 +242,8 @@ const App = (() => {
       btn.label = stripExtension(file.name).slice(0, 24);
       btn.color = BUTTON_PALETTE[i % BUTTON_PALETTE.length];
       btn.hidden = false;
+      btn.start = 0;
+      btn.end = null;
     }
 
     persist();
@@ -249,6 +265,8 @@ const App = (() => {
     const colorInput = document.getElementById('btn-color-input');
     const soundInput = document.getElementById('btn-sound-input');
     const currentHint = document.getElementById('btn-sound-current');
+    const startInput = document.getElementById('btn-start-input');
+    const endInput = document.getElementById('btn-end-input');
 
     document.getElementById('btn-cancel').addEventListener('click', () => dialog.close());
 
@@ -256,7 +274,38 @@ const App = (() => {
       const btn = activeProfile().buttons[editingButtonIndex];
       if (btn.soundKey) await Storage.deleteBlob(btn.soundKey);
       btn.soundKey = null;
+      btn.start = 0;
+      btn.end = null;
       currentHint.textContent = 'No sound assigned';
+      setupTrimUI(null, 0, null);
+    });
+
+    soundInput.addEventListener('change', () => {
+      const file = soundInput.files[0];
+      if (!file) return;
+      if (pendingSoundObjectUrl) URL.revokeObjectURL(pendingSoundObjectUrl);
+      pendingSoundObjectUrl = URL.createObjectURL(file);
+      currentHint.textContent = 'New sound selected — choose the part to play below';
+      setupTrimUI(pendingSoundObjectUrl, 0, null);
+    });
+
+    startInput.addEventListener('input', () => {
+      if (parseFloat(startInput.value) > parseFloat(endInput.value)) {
+        endInput.value = startInput.value;
+      }
+      updateTrimLabels();
+    });
+
+    endInput.addEventListener('input', () => {
+      if (parseFloat(endInput.value) < parseFloat(startInput.value)) {
+        startInput.value = endInput.value;
+      }
+      updateTrimLabels();
+    });
+
+    document.getElementById('btn-preview-trim').addEventListener('click', () => {
+      if (!currentTrimUrl) return;
+      AudioPlayer.preview(currentTrimUrl, parseFloat(startInput.value), parseFloat(endInput.value));
     });
 
     document.getElementById('button-editor-form').addEventListener('submit', async () => {
@@ -274,9 +323,63 @@ const App = (() => {
         objectUrlCache.delete(key);
       }
 
+      if (btn.soundKey) {
+        const start = parseFloat(startInput.value) || 0;
+        const end = parseFloat(endInput.value);
+        btn.start = start;
+        // Treat "slider left at (near) the full duration" as untrimmed, so a
+        // button no one has ever trimmed keeps playing to the real end even
+        // if the file gets replaced later with a different-length one.
+        btn.end = Number.isFinite(end) && end < currentTrimDuration - 0.05 ? end : null;
+      } else {
+        btn.start = 0;
+        btn.end = null;
+      }
+
+      if (pendingSoundObjectUrl) {
+        URL.revokeObjectURL(pendingSoundObjectUrl);
+        pendingSoundObjectUrl = null;
+      }
+
       persist();
       renderBoard();
     });
+  }
+
+  function updateTrimLabels() {
+    const startInput = document.getElementById('btn-start-input');
+    const endInput = document.getElementById('btn-end-input');
+    document.getElementById('trim-start-label').textContent = formatTime(parseFloat(startInput.value));
+    document.getElementById('trim-end-label').textContent = formatTime(parseFloat(endInput.value));
+  }
+
+  async function setupTrimUI(url, start, end) {
+    const requestId = ++trimRequestId;
+    const section = document.getElementById('btn-trim-section');
+    if (!url) {
+      section.hidden = true;
+      currentTrimUrl = null;
+      currentTrimDuration = 0;
+      return;
+    }
+
+    const duration = await AudioPlayer.getDuration(url);
+    // A newer call (clear sound, pick a different file, reopen the dialog)
+    // may have started and finished while this probe was in flight.
+    if (requestId !== trimRequestId) return;
+
+    currentTrimUrl = url;
+    currentTrimDuration = duration;
+    section.hidden = false;
+
+    const startInput = document.getElementById('btn-start-input');
+    const endInput = document.getElementById('btn-end-input');
+    startInput.max = duration;
+    endInput.max = duration;
+    startInput.value = Math.min(Math.max(start || 0, 0), duration);
+    endInput.value = Math.min(end != null ? end : duration, duration);
+    document.getElementById('trim-duration').textContent = formatTime(duration);
+    updateTrimLabels();
   }
 
   function openButtonEditor(index) {
@@ -289,6 +392,18 @@ const App = (() => {
       ? 'Sound assigned (choose a file to replace it)'
       : 'No sound assigned';
     document.getElementById('btn-hidden-input').checked = !!btn.hidden;
+
+    if (pendingSoundObjectUrl) {
+      URL.revokeObjectURL(pendingSoundObjectUrl);
+      pendingSoundObjectUrl = null;
+    }
+
+    if (btn.soundKey) {
+      resolveObjectUrl(btn.soundKey).then((url) => setupTrimUI(url, btn.start, btn.end));
+    } else {
+      setupTrimUI(null, 0, null);
+    }
+
     document.getElementById('button-editor').showModal();
   }
 
