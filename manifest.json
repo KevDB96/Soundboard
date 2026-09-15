@@ -1,19 +1,25 @@
 {
-  "name": "Soundboard",
-  "short_name": "Soundboard",
-  "description": "A tap-to-play soundboard with custom profiles, sounds, and backgrounds.",
+  "name": "Poppy Soundboard",
+  "short_name": "Poppy Soundboard",
+  "description": "A light, floral soundboard for custom profiles, sounds, and backgrounds.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#fffaf4",
-  "theme_color": "#fffaf4",
+  "theme_color": "#e85d83",
   "icons": [
+    {
+      "src": "icons/poppy-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
     {
       "src": "icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
