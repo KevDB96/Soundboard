@@ -27,9 +27,9 @@
   <main id="board-grid" aria-label="Sound buttons"></main>
 
   <!-- Button editor modal -->
-  <dialog id="button-editor">
+  <dialog id="button-editor" aria-labelledby="button-editor-title">
     <form method="dialog" id="button-editor-form">
-      <h2>Edit Button</h2>
+      <h2 id="button-editor-title">Edit Button</h2>
       <label>
         Label
         <input type="text" id="btn-label-input" maxlength="24" placeholder="e.g. Air Horn" />
@@ -68,9 +68,9 @@
   </dialog>
 
   <!-- Profile editor modal -->
-  <dialog id="profile-editor">
+  <dialog id="profile-editor" aria-labelledby="profile-editor-title">
     <form method="dialog" id="profile-editor-form">
-      <h2>Edit Profile</h2>
+      <h2 id="profile-editor-title">Edit Profile</h2>
       <label>
         Name
         <input type="text" id="profile-name-input" maxlength="20" placeholder="e.g. Party" />
