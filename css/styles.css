@@ -20,6 +20,10 @@
   --focus-ring: #4f8058;
   --overlay: rgba(74, 52, 43, 0.38);
   --pulse-ring: rgba(232, 93, 131, 0.2);
+  --leaf: #7ea56f;
+  --leaf-soft: rgba(126, 165, 111, 0.34);
+  --floral-pink: #ef9fb4;
+  --ornament-line: rgba(154, 112, 80, 0.32);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 18px;
@@ -75,7 +79,38 @@ body {
   transition: background-image 0.3s ease;
 }
 
+/* Decorative woodland wash. It lives behind the app surface so profile
+   backgrounds remain visible while the ornament never becomes interactive. */
+#background-layer::before,
+#background-layer::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+
+#background-layer::before {
+  inset: 0;
+  opacity: 0.72;
+  background:
+    radial-gradient(ellipse 26px 10px at 7% 22%, var(--leaf-soft) 0 45%, transparent 48%),
+    radial-gradient(ellipse 25px 10px at 93% 66%, var(--leaf-soft) 0 45%, transparent 48%),
+    linear-gradient(112deg, transparent 0 5%, var(--ornament-line) 5.2% 5.6%, transparent 5.8% 94.2%, var(--ornament-line) 94.4% 94.8%, transparent 95%);
+}
+
+#background-layer::after {
+  width: 110px;
+  height: 110px;
+  right: -38px;
+  bottom: 8%;
+  opacity: 0.34;
+  border: 2px solid var(--floral-gold);
+  border-radius: 58% 42% 55% 45%;
+  transform: rotate(28deg);
+  box-shadow: -18px 17px 0 -10px var(--leaf), -33px 28px 0 -13px var(--leaf);
+}
+
 #app-header {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
@@ -111,6 +146,24 @@ body {
   background-size: 34px 34px;
   background-repeat: no-repeat;
   min-height: 34px;
+}
+
+/* A quiet floral divider anchors the header without taking a layout row. */
+#app-header::after {
+  content: '·  ❧  ·';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  z-index: 2;
+  pointer-events: none;
+  padding: 0 10px;
+  background: var(--surface);
+  color: var(--floral-brown);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  line-height: 16px;
+  transform: translateX(-50%);
 }
 
 #header-actions {
@@ -204,6 +257,7 @@ body {
 }
 
 #board-grid {
+  position: relative;
   flex: 1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -214,6 +268,38 @@ body {
   padding: clamp(12px, 3vw, 22px);
   padding-bottom: max(clamp(12px, 3vw, 22px), env(safe-area-inset-bottom));
   min-height: 0;
+}
+
+/* Corner leaves and the fine top/bottom rule frame the board. Absolute
+   pseudo-elements keep the nine functional buttons as the only grid items. */
+#board-grid::before,
+#board-grid::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#board-grid::before {
+  inset: 9px 11px auto;
+  height: 18px;
+  border-top: 1px solid var(--ornament-line);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse 18px 7px at 1% 100%, var(--leaf) 0 48%, transparent 51%),
+    radial-gradient(ellipse 18px 7px at 99% 100%, var(--leaf) 0 48%, transparent 51%),
+    radial-gradient(circle at 50% 0, var(--floral-pink) 0 3px, transparent 3.5px);
+}
+
+#board-grid::after {
+  inset: auto 11px 10px;
+  height: 26px;
+  border-bottom: 1px solid var(--ornament-line);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse 21px 8px at 1% 0, var(--leaf) 0 48%, transparent 51%),
+    radial-gradient(ellipse 21px 8px at 99% 0, var(--leaf) 0 48%, transparent 51%),
+    radial-gradient(circle at 50% 100%, var(--accent-soft) 0 4px, transparent 4.5px);
 }
 
 .sound-btn {
@@ -361,6 +447,68 @@ body.edit-mode .sound-btn.hidden-btn {
     height: 27px;
     top: 8px;
     right: 8px;
+  }
+}
+
+@media (max-height: 620px) and (max-width: 600px) {
+  #app-header {
+    padding-top: max(6px, env(safe-area-inset-top));
+    gap: 5px 8px;
+  }
+
+  #app-header::before {
+    min-height: 29px;
+    padding-left: 36px;
+    font-size: 16px;
+    background-size: 28px 28px;
+  }
+
+  #app-header::after {
+    bottom: -6px;
+    font-size: 11px;
+    line-height: 12px;
+  }
+
+  #board-grid {
+    gap: 8px;
+    padding-top: 10px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .sound-btn {
+    min-height: 76px;
+    padding-block: 12px;
+  }
+
+  #board-grid::after {
+    bottom: 5px;
+  }
+}
+
+@media (min-width: 700px) {
+  #app-header {
+    padding-inline: max(20px, calc((100vw - 1040px) / 2));
+  }
+
+  #board-grid {
+    width: min(100%, 820px);
+    padding-inline: 28px;
+    padding-block: 24px;
+  }
+}
+
+@media (min-width: 1100px) {
+  #app-header {
+    width: min(100%, 1040px);
+    margin-inline: auto;
+    border-inline: 1px solid var(--border);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+
+  #board-grid {
+    max-height: 760px;
+    align-self: center;
+    flex: 1 1 auto;
   }
 }
 
