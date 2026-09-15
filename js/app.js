@@ -110,9 +110,18 @@ const App = (() => {
 
       const el = document.createElement('button');
       el.className = 'sound-btn' + (btn.soundKey ? '' : ' empty') + (btn.hidden ? ' hidden-btn' : '');
+      el.dataset.slot = String(index);
       el.style.setProperty('--btn-color', btn.color);
-      el.textContent = btn.label || (editMode ? 'Tap to edit' : '');
-      if (btn.hidden) el.textContent += ' (hidden)';
+      const label = document.createElement('span');
+      label.className = 'sound-label';
+      label.textContent = btn.label || (editMode ? 'Tap to edit' : '');
+      el.appendChild(label);
+      if (btn.hidden) {
+        const hiddenNote = document.createElement('span');
+        hiddenNote.className = 'hidden-note';
+        hiddenNote.textContent = 'Hidden';
+        el.appendChild(hiddenNote);
+      }
       el.addEventListener('click', () => onButtonTap(btn, el, index));
       grid.appendChild(el);
     });
