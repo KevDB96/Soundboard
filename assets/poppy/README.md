@@ -15,3 +15,26 @@ The pack provenance describes these as extracted from the approved pastel/faun/b
 - `states/` — 17 files: `delete-sound-dialog.png`, `empty-state-deer.png`, `help-deer.png`, `loading-flower.png`, `settings-panel.png`, `sound-added-toast.png`, `sound-button-default-1.png`, `sound-button-default-2.png`, `sound-button-default-3.png`, `sound-button-default-4.png`, `sound-button-disabled.png`, `sound-button-hover.png`, `sound-button-normal.png`, `sound-button-pressed.png`, `sound-button-selected.png`, `toggle-off.png`, `toggle-on.png`
 
 Total imported: 72 PNG files. All imported PNGs were verified non-empty after extraction.
+
+## Runtime trim
+
+Runtime-referenced PNGs were inspected with Pillow. Trimmed files use the substantial-alpha (alpha >= 8) artwork bounds plus a 5% per-side transparent margin (minimum 4 px); the original nonzero-alpha fringe was retained when it fell within that margin. Files already within those conservative bounds were skipped. No source sheets were modified.
+
+| Asset | Before | Before alpha bbox | After | After alpha bbox | Result |
+| --- | ---: | --- | ---: | --- | --- |
+| `branding/poppy-soundboard-logo.png` | 628x315 | (4,4)-(624,311) | 628x315 | (4,4)-(624,311) | Skipped, tight |
+| `ui/action-upload.png` | 153x154 | (4,4)-(149,150) | 144x154 | (0,4)-(140,150) | Trimmed |
+| `ui/action-delete.png` | 143x162 | (4,4)-(139,158) | 143x155 | (4,4)-(139,155) | Trimmed |
+| `ui/action-add.png` | 105x156 | (4,4)-(101,152) | 105x156 | (4,4)-(101,152) | Skipped, tight |
+| `ui/action-edit.png` | 148x156 | (4,4)-(144,152) | 148x156 | (4,4)-(144,152) | Skipped, tight |
+| `decor/divider-small.png` | 560x250 | (6,6)-(554,244) | 533x132 | (7,1)-(512,129) | Trimmed |
+| `decor/vine-horizontal.png` | 997x442 | (6,6)-(991,436) | 997x205 | (6,0)-(991,205) | Trimmed |
+| `sounds/pan-flute.png` | 1219x1213 | (18,18)-(1201,1195) | 1198x613 | (3,25)-(1180,613) | Trimmed |
+| `sounds/birdsong.png` | 1266x1271 | (18,18)-(1248,1253) | 1196x592 | (1,0)-(1170,592) | Trimmed |
+| `sounds/laugh.png` | 1006x908 | (18,18)-(988,890) | 1006x586 | (18,25)-(988,575) | Trimmed |
+| `sounds/applause.png` | 1233x1195 | (18,18)-(1215,1177) | 1133x768 | (0,0)-(1133,765) | Trimmed |
+| `sounds/drum.png` | 1173x1213 | (18,18)-(1155,1195) | 1111x673 | (48,14)-(1098,648) | Trimmed |
+| `sounds/chime.png` | 1276x1227 | (18,18)-(1258,1209) | 1040x718 | (3,0)-(1040,714) | Trimmed |
+| `sounds/forest-ambience.png` | 458x507 | (8,8)-(450,499) | 458x330 | (8,0)-(450,322) | Trimmed |
+| `sounds/faun-call.png` | 499x535 | (8,8)-(491,527) | 431x288 | (0,10)-(425,280) | Trimmed |
+| `sounds/lute-strum.png` | 472x448 | (8,8)-(464,440) | 461x319 | (6,12)-(460,311) | Trimmed |
