@@ -72,6 +72,7 @@ body {
 #background-layer {
   position: fixed;
   inset: 0;
+  pointer-events: none;
   background-size: cover;
   background-position: center;
   z-index: -1;
@@ -79,35 +80,8 @@ body {
   transition: background-image 0.3s ease;
 }
 
-/* Decorative woodland wash. It lives behind the app surface so profile
-   backgrounds remain visible while the ornament never becomes interactive. */
-#background-layer::before,
-#background-layer::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-}
-
-#background-layer::before {
-  inset: 0;
-  opacity: 0.72;
-  background:
-    radial-gradient(ellipse 26px 10px at 7% 22%, var(--leaf-soft) 0 45%, transparent 48%),
-    radial-gradient(ellipse 25px 10px at 93% 66%, var(--leaf-soft) 0 45%, transparent 48%),
-    linear-gradient(112deg, transparent 0 5%, var(--ornament-line) 5.2% 5.6%, transparent 5.8% 94.2%, var(--ornament-line) 94.4% 94.8%, transparent 95%);
-}
-
-#background-layer::after {
-  width: 110px;
-  height: 110px;
-  right: -38px;
-  bottom: 8%;
-  opacity: 0.34;
-  border: 2px solid var(--floral-gold);
-  border-radius: 58% 42% 55% 45%;
-  transform: rotate(28deg);
-  box-shadow: -18px 17px 0 -10px var(--leaf), -33px 28px 0 -13px var(--leaf);
-}
+/* Keep the page outside the centered app composition calm. Decorative assets
+   are placed on the header/board instead of being painted across the viewport. */
 
 #app-header {
   position: relative;
@@ -721,7 +695,7 @@ dialog input[type='color'] {
   top: 5px;
   left: 50%;
   z-index: 0;
-  width: min(360px, 76vw);
+  width: min(320px, 72vw);
   height: 28px;
   object-fit: contain;
   pointer-events: none;
@@ -737,6 +711,10 @@ dialog input[type='color'] {
 .sound-btn::before,
 .sound-btn::after {
   content: none;
+}
+
+.sound-btn {
+  z-index: 1;
 }
 
 .sound-art {
