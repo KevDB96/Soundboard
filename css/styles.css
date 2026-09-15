@@ -270,7 +270,13 @@ body {
     var(--surface-muted);
   color: var(--text-dim);
   box-shadow: none;
-  opacity: 0.72;
+  cursor: default;
+}
+
+.sound-btn.empty .sound-label {
+  position: absolute;
+  inset: auto 12px 14px;
+  text-align: center;
 }
 
 body.edit-mode .sound-btn {
@@ -420,17 +426,35 @@ body.edit-mode .sound-btn.hidden-btn {
   }
 
   #board-grid {
-    width: min(84vw, 1320px);
+    width: min(92vw, 1200px);
+    max-height: min(700px, calc(100dvh - 120px));
     align-self: center;
     flex: 1 1 auto;
     margin: 0 auto 14px;
-    padding: 28px;
-    padding-bottom: 28px;
+    grid-template-rows: repeat(3, minmax(145px, 1fr));
+    gap: clamp(14px, 1.5vw, 22px);
+    padding: clamp(20px, 2.2vw, 26px);
+    padding-bottom: clamp(20px, 2.2vw, 26px);
     border: 1px solid var(--border);
     border-top: 0;
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     background: color-mix(in srgb, var(--surface) 84%, transparent);
     box-shadow: 0 7px 22px rgba(121, 79, 61, 0.1);
+  }
+
+  .sound-btn {
+    min-height: 145px;
+    padding: 20px clamp(16px, 2vw, 28px);
+    border-radius: clamp(18px, 2vw, 26px);
+    font-size: clamp(16px, 1.35vw, 20px);
+  }
+
+  .sound-btn:not(.empty) .sound-label {
+    max-width: calc(100% - clamp(100px, 10vw, 150px));
+  }
+
+  body.edit-mode .sound-btn.empty {
+    cursor: pointer;
   }
 }
 
@@ -728,6 +752,29 @@ dialog input[type='color'] {
 
 .sound-btn.empty .sound-art {
   opacity: 0.28;
+}
+
+/* Desktop card art is intentionally larger than the phone treatment above.
+   Keep these overrides after the shared art defaults so the focal-point rules
+   remain authoritative in the cascade. */
+@media (min-width: 900px) {
+  .sound-btn.empty .sound-art {
+    top: 50%;
+    right: auto;
+    left: 50%;
+    width: clamp(96px, 10vw, 148px);
+    height: clamp(84px, 9vw, 132px);
+    opacity: 0.62;
+    transform: translate(-50%, -54%);
+  }
+
+  .sound-btn:not(.empty) .sound-art {
+    top: 12px;
+    right: 14px;
+    width: clamp(100px, 10vw, 150px);
+    height: clamp(76px, 8vw, 124px);
+    opacity: 0.78;
+  }
 }
 
 @media (max-height: 620px) and (max-width: 600px) {
