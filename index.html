@@ -14,17 +14,21 @@
   <div id="background-layer"></div>
 
   <header id="app-header">
+    <img class="brand-logo" src="assets/poppy/branding/poppy-soundboard-logo.png" alt="Poppy Soundboard" />
     <nav id="profile-tabs" aria-label="Profiles"></nav>
     <div id="header-actions">
-      <button id="import-sounds-btn" class="icon-btn" title="Import sounds from phone">📂</button>
-      <button id="delete-profile-btn" class="icon-btn danger-icon" title="Delete this profile">🗑</button>
-      <button id="add-profile-btn" class="icon-btn" title="Add profile">+</button>
-      <button id="edit-toggle-btn" class="icon-btn" title="Edit profile">✎</button>
+      <button id="import-sounds-btn" class="icon-btn" title="Import sounds from phone" aria-label="Import sounds from phone"><img src="assets/poppy/ui/action-upload.png" alt="" aria-hidden="true" /></button>
+      <button id="delete-profile-btn" class="icon-btn danger-icon" title="Delete this profile" aria-label="Delete this profile"><img src="assets/poppy/ui/action-delete.png" alt="" aria-hidden="true" /></button>
+      <button id="add-profile-btn" class="icon-btn" title="Add profile" aria-label="Add profile"><img src="assets/poppy/ui/action-add.png" alt="" aria-hidden="true" /></button>
+      <button id="edit-toggle-btn" class="icon-btn" title="Edit profile" aria-label="Edit profile"><img src="assets/poppy/ui/action-edit.png" alt="" aria-hidden="true" /></button>
     </div>
+    <img class="header-divider" src="assets/poppy/decor/divider-small.png" alt="" aria-hidden="true" />
   </header>
   <input type="file" id="import-sounds-input" accept="audio/*" multiple webkitdirectory hidden />
 
-  <main id="board-grid" aria-label="Sound buttons"></main>
+  <main id="board-grid" aria-label="Sound buttons">
+    <img class="board-vine" src="assets/poppy/decor/vine-horizontal.png" alt="" aria-hidden="true" />
+  </main>
 
   <!-- Button editor modal -->
   <dialog id="button-editor" aria-labelledby="button-editor-title">

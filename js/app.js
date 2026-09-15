@@ -13,6 +13,13 @@ const BUTTON_PALETTE = [
   '#ff5c5c', '#ff9f5c', '#ffd85c', '#8cff5c', '#5cffb0',
   '#5cd6ff', '#5c8cff', '#a05cff', '#ff5cd6',
 ];
+// Artwork is presentation-only and keyed to the fixed board slot. Stored
+// label/color/soundKey/start/end/hidden values remain authoritative when a
+// user edits a label or replaces the audio.
+const SLOT_ARTWORK = [
+  'pan-flute.png', 'birdsong.png', 'laugh.png', 'applause.png', 'drum.png',
+  'chime.png', 'forest-ambience.png', 'faun-call.png', 'lute-strum.png',
+];
 
 const App = (() => {
   let state = null;
@@ -107,6 +114,12 @@ const App = (() => {
 
     const grid = document.getElementById('board-grid');
     grid.innerHTML = '';
+    const boardVine = document.createElement('img');
+    boardVine.className = 'board-vine';
+    boardVine.src = 'assets/poppy/decor/vine-horizontal.png';
+    boardVine.alt = '';
+    boardVine.setAttribute('aria-hidden', 'true');
+    grid.appendChild(boardVine);
     const profile = activeProfile();
 
     profile.buttons.forEach((btn, index) => {
@@ -116,6 +129,13 @@ const App = (() => {
       el.className = 'sound-btn' + (btn.soundKey ? '' : ' empty') + (btn.hidden ? ' hidden-btn' : '');
       el.dataset.slot = String(index);
       el.style.setProperty('--btn-color', btn.color);
+      el.setAttribute('aria-label', btn.label || (editMode ? `Edit empty button ${index + 1}` : `Empty sound button ${index + 1}`));
+      const artwork = document.createElement('img');
+      artwork.className = 'sound-art';
+      artwork.src = `assets/poppy/sounds/${SLOT_ARTWORK[index]}`;
+      artwork.alt = '';
+      artwork.setAttribute('aria-hidden', 'true');
+      el.appendChild(artwork);
       const label = document.createElement('span');
       label.className = 'sound-label';
       label.textContent = btn.label || (editMode ? 'Tap to edit' : '');
