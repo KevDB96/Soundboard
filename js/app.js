@@ -22,6 +22,7 @@ const App = (() => {
   let currentTrimUrl = null;
   let trimRequestId = 0; // invalidates a duration probe superseded by a newer setupTrimUI call
   let pendingSoundObjectUrl = null; // object URL for a newly-picked, not-yet-saved sound file
+  let pendingSoundClear = false;
   const objectUrlCache = new Map(); // blobKey -> object URL, revoked on profile switch
 
   function emptyButton() {
@@ -60,7 +61,7 @@ const App = (() => {
 
   // Returns true if the profile was deleted (false if the user cancelled or
   // it was the last remaining profile).
-  function deleteProfile(profile) {
+  async function deleteProfile(profile) {
     if (state.profiles.length <= 1) {
       alert('At least one profile must remain.');
       return false;
@@ -68,6 +69,9 @@ const App = (() => {
     if (!confirm(`Delete "${profile.name}"? This removes its sounds and background too.`)) {
       return false;
     }
+    const blobKeys = profile.buttons.map((btn) => btn.soundKey).filter(Boolean);
+    if (profile.backgroundKey) blobKeys.push(profile.backgroundKey);
+    await Promise.all(blobKeys.map((key) => Storage.deleteBlob(key)));
     state.profiles = state.profiles.filter((p) => p.id !== profile.id);
     if (state.activeProfileId === profile.id) {
       state.activeProfileId = state.profiles[0].id;
@@ -180,7 +184,7 @@ const App = (() => {
     });
 
     document.getElementById('delete-profile-btn').addEventListener('click', () => {
-      deleteProfile(activeProfile());
+      void deleteProfile(activeProfile());
     });
 
     document.getElementById('edit-toggle-btn').addEventListener('dblclick', openProfileEditor);
@@ -280,11 +284,7 @@ const App = (() => {
     document.getElementById('btn-cancel').addEventListener('click', () => dialog.close());
 
     document.getElementById('btn-clear-sound').addEventListener('click', async () => {
-      const btn = activeProfile().buttons[editingButtonIndex];
-      if (btn.soundKey) await Storage.deleteBlob(btn.soundKey);
-      btn.soundKey = null;
-      btn.start = 0;
-      btn.end = null;
+      pendingSoundClear = true;
       currentHint.textContent = 'No sound assigned';
       setupTrimUI(null, 0, null);
     });
@@ -294,6 +294,7 @@ const App = (() => {
       if (!file) return;
       if (pendingSoundObjectUrl) URL.revokeObjectURL(pendingSoundObjectUrl);
       pendingSoundObjectUrl = URL.createObjectURL(file);
+      pendingSoundClear = false;
       currentHint.textContent = 'New sound selected — choose the part to play below';
       setupTrimUI(pendingSoundObjectUrl, 0, null);
     });
@@ -330,6 +331,12 @@ const App = (() => {
         if (btn.soundKey) await Storage.deleteBlob(btn.soundKey);
         btn.soundKey = key;
         objectUrlCache.delete(key);
+        pendingSoundClear = false;
+      } else if (pendingSoundClear) {
+        if (btn.soundKey) await Storage.deleteBlob(btn.soundKey);
+        btn.soundKey = null;
+        btn.start = 0;
+        btn.end = null;
       }
 
       if (btn.soundKey) {
@@ -397,6 +404,7 @@ const App = (() => {
     document.getElementById('btn-label-input').value = btn.label;
     document.getElementById('btn-color-input').value = btn.color;
     document.getElementById('btn-sound-input').value = '';
+    pendingSoundClear = false;
     document.getElementById('btn-sound-current').textContent = btn.soundKey
       ? 'Sound assigned (choose a file to replace it)'
       : 'No sound assigned';
