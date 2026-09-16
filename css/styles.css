@@ -860,3 +860,9 @@ dialog input[type='color'] {
     height: 12px;
   }
 }
+
+@media (max-width: 600px) {
+  #board-grid {
+    flex: 0 0 min(500px, calc(100dvh - 126px));
+  }
+}
