@@ -102,16 +102,6 @@ body {
     gap: 3px;
   }
 
-  .icon-btn {
-    width: 34px;
-    height: 34px;
-  }
-
-  .icon-btn img {
-    width: 30px;
-    height: 30px;
-  }
-
   #board-grid {
     flex: 0 0 auto;
     width: 100vw;
@@ -222,6 +212,37 @@ body {
   font-weight: 650;
   white-space: nowrap;
   box-shadow: 0 2px 5px rgba(121, 79, 61, 0.07);
+}
+
+.profile-tab-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 3px;
+}
+
+.profile-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  border: 1px solid var(--accent-soft);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 2px 5px rgba(121, 79, 61, 0.07);
+  cursor: pointer;
+}
+
+.profile-edit-btn:hover {
+  background: var(--surface-hover);
+}
+
+.profile-edit-btn:active {
+  transform: scale(var(--pressed-scale));
 }
 
 .profile-tab.active {
@@ -482,9 +503,11 @@ body.edit-mode .sound-btn.hidden-btn {
     height: 46px;
   }
 
-  .icon-btn img {
-    width: 42px;
-    height: 42px;
+  .profile-edit-btn {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+    padding: 6px;
   }
 
   .header-divider {
@@ -778,10 +801,25 @@ dialog input[type='color'] {
 
 .icon-btn img {
   display: block;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
   pointer-events: none;
+}
+
+.profile-edit-btn img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .icon-btn img {
+    width: 30px;
+    height: 30px;
+  }
 }
 
 .board-vine {

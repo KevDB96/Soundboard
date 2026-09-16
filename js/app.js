@@ -95,16 +95,37 @@ const App = (() => {
     const nav = document.getElementById('profile-tabs');
     nav.innerHTML = '';
     for (const profile of state.profiles) {
+      const group = document.createElement('div');
+      group.className = 'profile-tab-group';
+
       const tab = document.createElement('button');
       tab.className = 'profile-tab' + (profile.id === state.activeProfileId ? ' active' : '');
       tab.textContent = profile.name;
+      tab.type = 'button';
       tab.addEventListener('click', () => {
         state.activeProfileId = profile.id;
         persist();
         renderTabs();
         renderBoard();
       });
-      nav.appendChild(tab);
+      group.appendChild(tab);
+
+      if (profile.id === state.activeProfileId) {
+        const editButton = document.createElement('button');
+        editButton.type = 'button';
+        editButton.className = 'profile-edit-btn';
+        editButton.title = `Edit profile "${profile.name}"`;
+        editButton.setAttribute('aria-label', `Edit profile "${profile.name}"`);
+        const editIcon = document.createElement('img');
+        editIcon.src = 'assets/poppy/ui/action-edit.png';
+        editIcon.alt = '';
+        editIcon.setAttribute('aria-hidden', 'true');
+        editButton.appendChild(editIcon);
+        editButton.addEventListener('click', openProfileEditor);
+        group.appendChild(editButton);
+      }
+
+      nav.appendChild(group);
     }
   }
 
@@ -207,15 +228,9 @@ const App = (() => {
       void deleteProfile(activeProfile());
     });
 
-    document.getElementById('edit-toggle-btn').addEventListener('dblclick', openProfileEditor);
     wireButtonEditorDialog();
     wireProfileEditorDialog();
     wireImportSounds();
-
-    // Double-click/double-tap the active tab to rename it or change its background.
-    document.getElementById('profile-tabs').addEventListener('dblclick', (e) => {
-      if (e.target.classList.contains('profile-tab')) openProfileEditor();
-    });
   }
 
   // --- Bulk import: pick a folder (Android) or several files (iOS) and fill the
