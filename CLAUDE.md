@@ -5,9 +5,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 A static, installable soundboard PWA. No build step, no backend, no
-dependencies — plain HTML/CSS/JS served as-is. Each profile has its own
-background image and a 3x3 grid of tappable buttons; tapping a button plays
-the mp3 assigned to it. Distribution is via "Add to Home Screen" (Android
+dependencies — plain HTML/CSS/JS served as-is. Each profile has a 3x3 grid of
+tappable buttons; tapping a button plays the mp3 assigned to it. Distribution
+is via "Add to Home Screen" (Android
 Chrome and iOS Safari), not app stores — see README.md for the install steps.
 
 ## Deployment
@@ -65,9 +65,9 @@ plain IIFE attached to `window` (no bundler, no modules):
 
 - [js/storage.js](js/storage.js) — the `Storage` object. Two persistence
   layers, split by size: small JSON (the profile/button structure) goes in
-  `localStorage` under one key; binary blobs (mp3s, background images) go in
+  `localStorage` under one key; binary blobs (mp3s) go in
   IndexedDB keyed by string, since localStorage can't hold them efficiently.
-  Blob keys (`soundKey`, `backgroundKey`) are stored in the localStorage JSON
+  Blob keys (`soundKey`) are stored in the localStorage JSON
   and dereferenced through `Storage.getBlob(key)`.
 - [js/audio.js](js/audio.js) — the `AudioPlayer` object. Caches one `<audio>`
   element per object URL so re-tapping a button restarts the sound rather
@@ -75,7 +75,7 @@ plain IIFE attached to `window` (no bundler, no modules):
 - [js/app.js](js/app.js) — the `App` object and the whole data model. State
   shape:
   ```
-  { activeProfileId, profiles: [{ id, name, backgroundKey, buttons: [{ label, color, soundKey, hidden, start, end }] }] }
+  { activeProfileId, profiles: [{ id, name, buttons: [{ label, color, soundKey, hidden, start, end }] }] }
   ```
   A `hidden` button is skipped entirely from the grid outside edit mode (its
   sound/label/color stay intact); inside edit mode it still renders, dimmed

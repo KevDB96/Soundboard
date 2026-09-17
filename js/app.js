@@ -1,12 +1,12 @@
 // App state, rendering, and event wiring. Data model:
 // state = {
 //   activeProfileId: string,
-//   profiles: [{ id, name, backgroundKey, buttons: [{ label, color, soundKey, hidden, start, end }] }]
+//   profiles: [{ id, name, buttons: [{ label, color, soundKey, hidden, start, end }] }]
 // }
 // start/end are seconds into the sound to play (end: null means play to the
 // natural end) - set via the trim sliders in the button editor. The
 // underlying mp3 is never modified, only played back partially.
-// backgroundKey/soundKey are IndexedDB keys (see storage.js); null when unset.
+// soundKey is an IndexedDB key (see storage.js); null when unset.
 const BUTTONS_PER_PROFILE = 9;
 const AUDIO_EXTENSIONS = /\.(mp3|wav|m4a|aac|ogg|oga|flac|wma|opus)$/i;
 const BUTTON_PALETTE = [
@@ -40,7 +40,6 @@ const App = (() => {
     return {
       id: crypto.randomUUID(),
       name,
-      backgroundKey: null,
       buttons: Array.from({ length: BUTTONS_PER_PROFILE }, emptyButton),
     };
   }
@@ -73,11 +72,10 @@ const App = (() => {
       alert('At least one profile must remain.');
       return false;
     }
-    if (!confirm(`Delete "${profile.name}"? This removes its sounds and background too.`)) {
+    if (!confirm(`Delete "${profile.name}"? This removes its sounds too.`)) {
       return false;
     }
     const blobKeys = profile.buttons.map((btn) => btn.soundKey).filter(Boolean);
-    if (profile.backgroundKey) blobKeys.push(profile.backgroundKey);
     await Promise.all(blobKeys.map((key) => Storage.deleteBlob(key)));
     state.profiles = state.profiles.filter((p) => p.id !== profile.id);
     if (state.activeProfileId === profile.id) {
@@ -112,7 +110,6 @@ const App = (() => {
 
   async function renderBoard() {
     document.body.classList.toggle('edit-mode', editMode);
-    await renderBackground();
 
     const grid = document.getElementById('board-grid');
     grid.innerHTML = '';
@@ -151,17 +148,6 @@ const App = (() => {
       el.addEventListener('click', () => onButtonTap(btn, el, index));
       grid.appendChild(el);
     });
-  }
-
-  async function renderBackground() {
-    const layer = document.getElementById('background-layer');
-    const profile = activeProfile();
-    if (!profile.backgroundKey) {
-      layer.style.backgroundImage = 'none';
-      return;
-    }
-    const url = await resolveObjectUrl(profile.backgroundKey);
-    layer.style.backgroundImage = url ? `url(${url})` : 'none';
   }
 
   async function resolveObjectUrl(blobKey) {
@@ -460,15 +446,6 @@ const App = (() => {
       const name = document.getElementById('profile-name-input').value.trim();
       if (name) profile.name = name;
 
-      const file = document.getElementById('profile-bg-input').files[0];
-      if (file) {
-        const key = `bg-${profile.id}-${Date.now()}`;
-        await Storage.putBlob(key, file);
-        if (profile.backgroundKey) await Storage.deleteBlob(profile.backgroundKey);
-        profile.backgroundKey = key;
-        objectUrlCache.delete(key);
-      }
-
       persist();
       renderProfiles();
       renderBoard();
@@ -478,7 +455,6 @@ const App = (() => {
   function openProfileEditor() {
     const profile = activeProfile();
     document.getElementById('profile-name-input').value = profile.name;
-    document.getElementById('profile-bg-input').value = '';
     document.getElementById('profile-editor').showModal();
   }
 

@@ -1,5 +1,5 @@
 // Persistence layer: small JSON (profiles/buttons metadata) lives in localStorage,
-// binary blobs (mp3s, background images) live in IndexedDB since localStorage
+// binary blobs (mp3s) live in IndexedDB since localStorage
 // can't hold them efficiently and has a much smaller quota.
 const Storage = (() => {
   const LS_KEY = 'soundboard.state.v1';

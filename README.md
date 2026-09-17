@@ -3,10 +3,10 @@
 **Live**: https://kevdb96.github.io/Soundboard/
 
 A lightweight, installable soundboard PWA. Create multiple profiles, each with
-its own background image and a 3x3 grid of tappable sound buttons. No build
+a 3x3 grid of tappable sound buttons. No build
 step, no backend — everything runs from static files and persists in the
-browser (localStorage for profile/button metadata, IndexedDB for the mp3 and
-background image blobs).
+browser (localStorage for profile/button metadata, IndexedDB for the mp3
+blobs).
 
 ## Running locally
 
@@ -46,8 +46,7 @@ Then open the printed URL in a browser.
 - Tap **+** to add a new profile, or the 🗑 icon to delete the current one
   (asks for confirmation; at least one profile always stays).
 - Pick a profile from the dropdown in the header to switch boards. The
-  pencil button next to it renames the current profile or changes its
-  background image.
+  pencil button next to it renames the current profile.
 
 ## Installing on a phone
 

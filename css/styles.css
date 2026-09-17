@@ -146,17 +146,6 @@ body {
   }
 }
 
-#background-layer {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-size: cover;
-  background-position: center;
-  z-index: -1;
-  filter: brightness(0.82) saturate(0.9);
-  transition: background-image 0.3s ease;
-}
-
 .shell-decoration {
   position: fixed;
   z-index: 0;
@@ -886,11 +875,12 @@ dialog input[type='color'] {
 
 .brand-logo {
   grid-area: brand;
+  justify-self: center;
   display: block;
   width: min(240px, 70vw, 34vh);
   height: auto;
   object-fit: contain;
-  object-position: left center;
+  object-position: center;
 }
 
 .header-divider {
