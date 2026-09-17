@@ -60,3 +60,27 @@ Runtime-referenced PNGs were inspected with Pillow. Trimmed files use the substa
 | `sounds/forest-ambience.png` | 458x507 | (8,8)-(450,499) | 458x330 | (8,0)-(450,322) | Trimmed |
 | `sounds/faun-call.png` | 499x535 | (8,8)-(491,527) | 431x288 | (0,10)-(425,280) | Trimmed |
 | `sounds/lute-strum.png` | 472x448 | (8,8)-(464,440) | 461x319 | (6,12)-(460,311) | Trimmed |
+
+## Page background frames
+
+`decor/background-mobile.webp` (941x1672, portrait) and
+`decor/background-desktop.webp` (1672x941, landscape) are the full-page floral
+frames painted by `body` in `css/styles.css`. Both are the only runtime assets
+here that the app uses as CSS `background-image` rather than as an `<img>`.
+
+They arrived as 24-bit RGB PNGs (`mobile bg.png`, `web bg.png`, ~1.2 MB each)
+and were converted to lossy WebP q90 (`method=6`), which took each one to
+~52-55 KB — a ~22x reduction with a measured mean channel error of 0.7/255 and
+a 99th-percentile error of 4/255, i.e. visually indistinguishable from the
+source. The originals are kept outside the repo at
+`Documents\ChatGPT\_poppy-source-originals\`; if either frame is ever replaced,
+re-run the same conversion rather than committing the PNG. Both frames are in
+the service-worker shell list, so a ~110 KB pair is all the offline cost.
+
+The CSS picks between them on the client: the portrait frame is the default and
+`@media (orientation: landscape)` swaps in the landscape one. Orientation, not
+viewport width, is the right switch because `background-size: cover` crops
+whichever frame it is given — matching the artwork's orientation to the
+viewport's is what keeps the garlands at the edges instead of sliding into the
+middle of the screen.
+

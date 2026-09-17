@@ -64,7 +64,16 @@ dialog:focus-visible {
 }
 
 body {
-  background: var(--bg);
+  /* Full-page Poppy floral frame. The portrait composition is the default so a
+     phone held normally is framed exactly as drawn; landscape viewports swap to
+     the landscape composition below. `cover` crops whichever frame it is given,
+     so matching the artwork's orientation to the viewport's is what keeps the
+     garlands out of the middle of the screen. */
+  background-color: var(--bg);
+  background-image: url('../assets/poppy/decor/background-mobile.webp');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   display: flex;
@@ -72,6 +81,12 @@ body {
   width: 100%;
   min-width: 0;
   overflow: hidden;
+}
+
+@media (orientation: landscape) {
+  body {
+    background-image: url('../assets/poppy/decor/background-desktop.webp');
+  }
 }
 
 @media (max-width: 600px) {
