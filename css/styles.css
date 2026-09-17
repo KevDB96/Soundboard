@@ -51,7 +51,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -86,14 +87,14 @@ body {
     flex: 0 0 auto;
     grid-template-columns: minmax(0, 1fr) max-content;
     grid-template-areas:
-      'brand actions'
-      'profiles profiles';
+      'brand brand'
+      'profiles actions';
     gap: 8px;
     padding-inline: 10px;
   }
 
   .brand-logo {
-    width: min(150px, calc(100vw - 210px));
+    width: min(240px, 70vw, 34vh);
     height: auto;
   }
 
@@ -194,10 +195,10 @@ body {
 #app-header {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 159px);
+  grid-template-columns: minmax(0, 1fr) max-content;
   grid-template-areas:
-    'brand actions'
-    'profiles profiles';
+    'brand brand'
+    'profiles actions';
   align-items: center;
   padding: max(10px, env(safe-area-inset-top)) 12px 8px;
   width: 100%;
@@ -215,51 +216,86 @@ body {
   grid-area: actions;
 }
 
-#profile-tabs {
+/* Profile switcher: a dropdown (native select so phones get their own picker
+   sheet) plus the always-visible pencil that opens the profile editor. */
+#profile-picker {
   grid-area: profiles;
-}
-
-#profile-tabs {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  flex: 1;
-  min-width: 0;
-  padding: 2px 2px 4px 0;
-  scrollbar-width: none;
-}
-#profile-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.profile-tab {
-  flex-shrink: 0;
-  min-height: 36px;
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--accent-soft);
-  border-radius: var(--radius-pill);
-  padding: 7px 14px;
-  font-size: 14px;
-  font-weight: 650;
-  white-space: nowrap;
-  box-shadow: 0 2px 5px rgba(121, 79, 61, 0.07);
-}
-
-.profile-tab-group {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
-  gap: 3px;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.profile-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 320px;
+}
+
+.profile-select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 15px;
+  width: 9px;
+  height: 9px;
+  border-right: 2.5px solid var(--accent-strong);
+  border-bottom: 2.5px solid var(--accent-strong);
+  transform: translateY(-3px) rotate(45deg);
+  pointer-events: none;
+}
+
+#profile-select {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 7px 38px 7px 15px;
+  border: 1px solid var(--accent-soft);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  box-shadow: 0 2px 5px rgba(121, 79, 61, 0.07);
+  cursor: pointer;
+}
+
+#profile-select:hover {
+  border-color: var(--accent);
+}
+
+#profile-select option {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .profile-edit-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 30px;
-  width: 30px;
-  height: 30px;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -276,12 +312,6 @@ body {
 
 .profile-edit-btn:active {
   transform: scale(var(--pressed-scale));
-}
-
-.profile-tab.active {
-  background: var(--accent);
-  color: var(--text-on-accent);
-  font-weight: 600;
 }
 
 #header-actions {
@@ -438,6 +468,43 @@ body.edit-mode .sound-btn.hidden-btn {
 }
 
 @media (max-width: 380px) {
+  /* Below ~380px the four action buttons plus the banner leave very little room
+     for the profile name, so tighten everything a notch rather than let the
+     dropdown truncate to an unreadable stub. */
+  #app-header {
+    padding-inline: 8px;
+  }
+
+  #header-actions {
+    gap: 2px;
+  }
+
+  .icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  #profile-picker {
+    gap: 4px;
+  }
+
+  .profile-select-wrap::after {
+    right: 12px;
+    width: 8px;
+    height: 8px;
+  }
+
+  #profile-select {
+    padding: 6px 30px 6px 11px;
+    font-size: 13px;
+  }
+
+  .profile-edit-btn {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
   #board-grid {
     gap: 8px;
     padding-inline: 10px;
@@ -502,8 +569,8 @@ body.edit-mode .sound-btn.hidden-btn {
 @media (min-width: 900px) {
   #app-header {
     width: min(84vw, 1320px);
-    min-height: 84px;
-    grid-template-columns: clamp(190px, 17vw, 230px) minmax(0, 1fr) auto;
+    min-height: 104px;
+    grid-template-columns: clamp(230px, 19vw, 300px) minmax(0, 1fr) auto;
     grid-template-areas: 'brand profiles actions';
     gap: 16px;
     margin: 14px auto 0;
@@ -514,19 +581,27 @@ body.edit-mode .sound-btn.hidden-btn {
   }
 
   .brand-logo {
-    width: clamp(190px, 17vw, 220px);
+    width: clamp(230px, 19vw, 300px);
     height: auto;
   }
 
-  #profile-tabs {
+  #profile-picker {
+    justify-self: stretch;
     align-self: center;
     gap: 8px;
-    padding: 2px 0;
   }
 
-  .profile-tab {
+  /* The trigger keeps a fixed, comfortable width instead of shrinking to the
+     length of the current profile name, so the header never reflows when the
+     selection changes. */
+  .profile-select-wrap {
+    flex: 0 1 280px;
+    max-width: 280px;
+  }
+
+  #profile-select {
     min-height: 42px;
-    padding: 8px 16px;
+    padding: 8px 40px 8px 17px;
     font-size: 15px;
   }
 
@@ -540,10 +615,10 @@ body.edit-mode .sound-btn.hidden-btn {
   }
 
   .profile-edit-btn {
-    flex-basis: 34px;
-    width: 34px;
-    height: 34px;
-    padding: 6px;
+    flex-basis: 46px;
+    width: 46px;
+    height: 46px;
+    padding: 4px;
   }
 
   .header-divider {
@@ -554,11 +629,11 @@ body.edit-mode .sound-btn.hidden-btn {
 
   #board-grid {
     width: min(92vw, 1200px);
-    max-height: min(700px, calc(100dvh - 155px));
+    max-height: min(700px, calc(100dvh - 190px));
     align-self: center;
     flex: 1 1 auto;
     margin: 0 auto 14px;
-    grid-template-rows: repeat(3, minmax(145px, 1fr));
+    grid-template-rows: repeat(3, minmax(135px, 1fr));
     gap: clamp(14px, 1.5vw, 22px);
     padding: clamp(20px, 2.2vw, 26px);
     padding-bottom: clamp(20px, 2.2vw, 26px);
@@ -570,7 +645,7 @@ body.edit-mode .sound-btn.hidden-btn {
   }
 
   .sound-btn {
-    min-height: 145px;
+    min-height: 135px;
     padding: 20px clamp(16px, 2vw, 28px);
     border-radius: clamp(18px, 2vw, 26px);
     font-size: clamp(16px, 1.35vw, 20px);
@@ -812,7 +887,7 @@ dialog input[type='color'] {
 .brand-logo {
   grid-area: brand;
   display: block;
-  width: min(156px, 42vw);
+  width: min(240px, 70vw, 34vh);
   height: auto;
   object-fit: contain;
   object-position: left center;
@@ -839,9 +914,7 @@ dialog input[type='color'] {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: left center;
-  clip-path: inset(12% 18% 0 0);
+  object-fit: contain;
   pointer-events: none;
 }
 
@@ -849,17 +922,8 @@ dialog input[type='color'] {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: left center;
-  clip-path: inset(12% 18% 0 0);
+  object-fit: contain;
   pointer-events: none;
-}
-
-@media (min-width: 900px) {
-  .icon-btn img {
-    width: auto;
-    height: 100%;
-  }
 }
 
 .board-vine {
@@ -929,7 +993,7 @@ dialog input[type='color'] {
 
 @media (max-height: 620px) and (max-width: 600px) {
   .brand-logo {
-    width: min(132px, calc(100vw - 210px));
+    width: min(180px, 62vw, 30vh);
     height: auto;
   }
 
@@ -953,16 +1017,11 @@ dialog input[type='color'] {
     height: auto;
     min-height: 0;
   }
-
-  .brand-logo {
-    width: min(150px, calc(100vw - 210px));
-    height: auto;
-  }
 }
 
 @media (min-width: 900px) {
   .brand-logo {
-    width: clamp(180px, 15vw, 190px);
+    width: clamp(230px, 19vw, 300px);
     height: auto;
   }
 }

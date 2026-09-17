@@ -18,7 +18,13 @@
 
   <header id="app-header">
     <img class="brand-logo" src="assets/poppy/branding/poppy-soundboard-logo.png" alt="Poppy Soundboard" />
-    <nav id="profile-tabs" aria-label="Profiles"></nav>
+    <div id="profile-picker">
+      <div class="profile-select-wrap">
+        <label class="visually-hidden" for="profile-select">Choose profile</label>
+        <select id="profile-select"></select>
+      </div>
+      <button id="profile-edit-btn" class="profile-edit-btn" type="button" title="Edit profile" aria-label="Edit profile"><img src="assets/poppy/ui/action-profile.png" alt="" aria-hidden="true" /></button>
+    </div>
     <div id="header-actions">
       <button id="import-sounds-btn" class="icon-btn" title="Import sounds from phone" aria-label="Import sounds from phone"><img src="assets/poppy/ui/action-upload.png" alt="" aria-hidden="true" /></button>
       <button id="delete-profile-btn" class="icon-btn danger-icon" title="Delete this profile" aria-label="Delete this profile"><img src="assets/poppy/ui/action-delete.png" alt="" aria-hidden="true" /></button>

@@ -54,7 +54,7 @@ Playwright's Chromium was installed globally via
 into a scratch npm project (outside this repo) can `require('playwright')`
 against it. The pattern: serve the app (`npx serve .`), launch headless
 Chromium with Playwright, `page.goto()` the served URL, interact with
-selectors (`.profile-tab`, `.sound-btn`, `#edit-toggle-btn`, `#button-editor`,
+selectors (`#profile-select`, `.sound-btn`, `#edit-toggle-btn`, `#button-editor`,
 `#profile-editor`), and screenshot. Watch `page.on('console')` /
 `page.on('pageerror')` for errors — the app throws none under normal use.
 
@@ -110,9 +110,11 @@ It does not gate anything profile-level anymore — that used to be true (a
 delete badge only showed up on tabs in edit mode) but was hard to discover,
 so profile deletion is now a permanent, always-visible 🗑 icon in the header
 next to the import button, wired straight to `deleteProfile(activeProfile())`
-— confirms, and refuses to drop the last remaining profile. Double-tapping
-the active profile tab still opens the profile editor dialog (rename, change
-background). Both editors are native `<dialog>` elements driven by
+— confirms, and refuses to drop the last remaining profile. Profiles are
+chosen from a native `<select>` dropdown (`renderProfiles` in
+[js/app.js](js/app.js) fills it) with the pencil button beside it opening the
+profile editor dialog (rename, change background). Both editors are native
+`<dialog>` elements driven by
 `showModal()`/`close()`.
 
 [service-worker.js](service-worker.js) caches the app shell (HTML/CSS/JS) for

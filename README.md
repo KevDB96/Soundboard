@@ -45,8 +45,9 @@ Then open the printed URL in a browser.
   to and stop at during playback.
 - Tap **+** to add a new profile, or the 🗑 icon to delete the current one
   (asks for confirmation; at least one profile always stays).
-- Double-tap a profile tab's name to rename it or change its background
-  image.
+- Pick a profile from the dropdown in the header to switch boards. The
+  pencil button next to it renames the current profile or changes its
+  background image.
 
 ## Installing on a phone
 

@@ -54,7 +54,7 @@ const App = (() => {
     }
     registerServiceWorker();
     wireGlobalControls();
-    renderTabs();
+    renderProfiles();
     renderBoard();
   }
 
@@ -84,49 +84,30 @@ const App = (() => {
       state.activeProfileId = state.profiles[0].id;
     }
     persist();
-    renderTabs();
+    renderProfiles();
     renderBoard();
     return true;
   }
 
   // --- Rendering ---
 
-  function renderTabs() {
-    const nav = document.getElementById('profile-tabs');
-    nav.innerHTML = '';
+  // The profile switcher is a native dropdown: one <option> per profile, plus
+  // the always-visible pencil beside it that opens the profile editor.
+  function renderProfiles() {
+    const select = document.getElementById('profile-select');
+    select.innerHTML = '';
     for (const profile of state.profiles) {
-      const group = document.createElement('div');
-      group.className = 'profile-tab-group';
-
-      const tab = document.createElement('button');
-      tab.className = 'profile-tab' + (profile.id === state.activeProfileId ? ' active' : '');
-      tab.textContent = profile.name;
-      tab.type = 'button';
-      tab.addEventListener('click', () => {
-        state.activeProfileId = profile.id;
-        persist();
-        renderTabs();
-        renderBoard();
-      });
-      group.appendChild(tab);
-
-      if (profile.id === state.activeProfileId) {
-        const editButton = document.createElement('button');
-        editButton.type = 'button';
-        editButton.className = 'profile-edit-btn';
-        editButton.title = `Edit profile "${profile.name}"`;
-        editButton.setAttribute('aria-label', `Edit profile "${profile.name}"`);
-        const editIcon = document.createElement('img');
-        editIcon.src = 'assets/poppy/ui/action-edit.png';
-        editIcon.alt = '';
-        editIcon.setAttribute('aria-hidden', 'true');
-        editButton.appendChild(editIcon);
-        editButton.addEventListener('click', openProfileEditor);
-        group.appendChild(editButton);
-      }
-
-      nav.appendChild(group);
+      const option = document.createElement('option');
+      option.value = profile.id;
+      option.textContent = profile.name;
+      select.appendChild(option);
     }
+    select.value = state.activeProfileId;
+
+    const profile = activeProfile();
+    const editButton = document.getElementById('profile-edit-btn');
+    editButton.title = `Edit profile "${profile.name}"`;
+    editButton.setAttribute('aria-label', `Edit profile "${profile.name}"`);
   }
 
   async function renderBoard() {
@@ -211,16 +192,24 @@ const App = (() => {
     document.getElementById('edit-toggle-btn').addEventListener('click', () => {
       editMode = !editMode;
       document.getElementById('edit-toggle-btn').classList.toggle('active', editMode);
-      renderTabs();
       renderBoard();
     });
+
+    document.getElementById('profile-select').addEventListener('change', (event) => {
+      state.activeProfileId = event.target.value;
+      persist();
+      renderProfiles();
+      renderBoard();
+    });
+
+    document.getElementById('profile-edit-btn').addEventListener('click', openProfileEditor);
 
     document.getElementById('add-profile-btn').addEventListener('click', () => {
       const profile = newProfile(`Profile ${state.profiles.length + 1}`);
       state.profiles.push(profile);
       state.activeProfileId = profile.id;
       persist();
-      renderTabs();
+      renderProfiles();
       renderBoard();
     });
 
@@ -481,7 +470,7 @@ const App = (() => {
       }
 
       persist();
-      renderTabs();
+      renderProfiles();
       renderBoard();
     });
   }

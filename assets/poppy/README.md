@@ -11,10 +11,22 @@ The pack provenance describes these as extracted from the approved pastel/faun/b
 - `branding/` — 3 files: `poppy-bard-emblem-lute.png`, `poppy-soundboard-logo.png`, `small-sounds-brighter-days-plaque.png`
 - `decor/` — 14 files: `cluster-bottom-left.png`, `cluster-bottom-right.png`, `corner-bottom-left.png`, `corner-bottom-right.png`, `divider-bottom-center.png`, `divider-small.png`, `flower-vine-small.png`, `leaf-single.png`, `music-sparkles.png`, `pink-flower-cluster.png`, `vine-corner-left.png`, `vine-footer-left.png`, `vine-footer-moon.png`, `vine-horizontal.png`
 - `sounds/` — 12 files: `applause.png`, `birdsong.png`, `chime.png`, `drum.png`, `faun-call.png`, `flower-chime.png`, `forest-ambience.png`, `gentle-wind.png`, `laugh.png`, `lute-strum.png`, `pan-flute.png`, `water-trickling.png`
-- `ui/` — 26 files: `action-add.png`, `action-delete.png`, `action-edit.png`, `action-folder.png`, `action-upload.png`, `filter-all.png`, `filter-custom.png`, `filter-favorites.png`, `header-favorites.png`, `header-help.png`, `header-settings.png`, `header-sound.png`, `nav-collections.png`, `nav-favorites.png`, `nav-next.png`, `nav-previous.png`, `nav-settings.png`, `nav-soundboard.png`, `now-playing-bar.png`, `play-green.png`, `play-pink.png`, `progress-slider.png`, `search-bar.png`, `search-icon.png`, `sound-list-row.png`, `volume-slider.png`
+- `ui/` — 27 files: `action-add.png`, `action-delete.png`, `action-edit.png`, `action-folder.png`, `action-profile.png`, `action-upload.png`, `filter-all.png`, `filter-custom.png`, `filter-favorites.png`, `header-favorites.png`, `header-help.png`, `header-settings.png`, `header-sound.png`, `nav-collections.png`, `nav-favorites.png`, `nav-next.png`, `nav-previous.png`, `nav-settings.png`, `nav-soundboard.png`, `now-playing-bar.png`, `play-green.png`, `play-pink.png`, `progress-slider.png`, `search-bar.png`, `search-icon.png`, `sound-list-row.png`, `volume-slider.png`
 - `states/` — 17 files: `delete-sound-dialog.png`, `empty-state-deer.png`, `help-deer.png`, `loading-flower.png`, `settings-panel.png`, `sound-added-toast.png`, `sound-button-default-1.png`, `sound-button-default-2.png`, `sound-button-default-3.png`, `sound-button-default-4.png`, `sound-button-disabled.png`, `sound-button-hover.png`, `sound-button-normal.png`, `sound-button-pressed.png`, `sound-button-selected.png`, `toggle-off.png`, `toggle-on.png`
 
 Total imported: 72 PNG files. All imported PNGs were verified non-empty after extraction.
+
+## Derived assets
+
+`ui/action-profile.png` is the one asset here that did not come from the pack. It was
+built from `ui/header-settings.png`, which is a crop fragment: a neighbouring badge bleeds
+in at its right edge, and it carries roughly 10 px of stray artwork below the circle, so its
+naive alpha bbox (126x138) is not square. The gear circle was instead located by its widest
+chord (127 px) plus a vertical scan at that centre for the top edge, then scaled by 0.921
+onto a 125x125 transparent canvas so its circle framing matches `ui/action-edit.png`
+exactly (circle 117 px at offset 4,4). It exists because the header's profile-settings
+button and the sound-slot edit toggle previously shared `action-edit.png` and sat side by
+side on phones, where two identical pencils read as the same control.
 
 ## Runtime trim
 
