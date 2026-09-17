@@ -1,6 +1,6 @@
 // App-shell cache so the board still loads offline. Sound/background blobs live in
 // IndexedDB (see js/storage.js) and don't need to go through this cache.
-const CACHE_NAME = 'soundboard-shell-v17-page-backgrounds';
+const CACHE_NAME = 'soundboard-shell-v18-app-icons';
 const APP_SHELL = [
   './',
   'index.html',
@@ -9,8 +9,10 @@ const APP_SHELL = [
   'js/storage.js',
   'js/audio.js',
   'js/app.js',
-  'icons/poppy-icon.svg',
-  'icons/icon.svg',
+  'icons/icon-192.png',
+  'icons/icon-512.png',
+  'icons/icon-maskable-512.png',
+  'icons/apple-touch-icon.png',
   'assets/poppy/branding/poppy-soundboard-logo.png',
   'assets/poppy/ui/action-upload.png',
   'assets/poppy/ui/action-delete.png',

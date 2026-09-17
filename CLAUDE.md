@@ -131,9 +131,10 @@ thing to suspect: hard-refresh, or unregister it in devtools
 
 ## Known limitations worth knowing before changing platform behavior
 
-- The PWA icon ([icons/icon.svg](icons/icon.svg)) is SVG-only. iOS Safari's
-  `apple-touch-icon` support for SVG is inconsistent across versions — if
-  home-screen icon fidelity on iOS becomes a priority, add PNG fallbacks.
+- The PWA icon set is raster PNG, not SVG — see [icons/README.md](icons/README.md)
+  for the four files, why there are two different 512s (as-is art for `any`, and
+  art padded to 80% on a plum mat for `maskable`), and how to regenerate them.
+  The 1254x1254 master illustration is deliberately kept outside the repo.
 - The button grid is a fixed 3x3 (`BUTTONS_PER_PROFILE` in
   [js/app.js](js/app.js)) — there's no UI for adding/removing individual
   buttons, only for editing the label/color/sound of the 9 fixed slots.
