@@ -18,7 +18,7 @@ Total imported: 72 PNG files. All imported PNGs were verified non-empty after ex
 
 ## Derived assets
 
-`ui/action-profile.png` is the one asset here that did not come from the pack. It was
+`ui/action-profile.png` is one of two assets here that did not come from the pack. It was
 built from `ui/header-settings.png`, which is a crop fragment: a neighbouring badge bleeds
 in at its right edge, and it carries roughly 10 px of stray artwork below the circle, so its
 naive alpha bbox (126x138) is not square. The gear circle was instead located by its widest
@@ -28,13 +28,23 @@ exactly (circle 117 px at offset 4,4). It exists because the header's profile-se
 button and the sound-slot edit toggle previously shared `action-edit.png` and sat side by
 side on phones, where two identical pencils read as the same control.
 
+`branding/poppy-soundboard-logo.png` was re-extracted from its source sheet after the
+original import was found to be clipped. The pack manifest recorded a fixed extraction box
+of `[0, 0, 620, 320]`, which sliced through the right-hand vine and the bottom leaves (the
+old file's rightmost content column held 126 opaque pixels, i.e. a straight vertical cut).
+It is now pulled from `poppy_soundboard_ui_sticker_sheet.png` as the connected alpha
+component containing the logo, so neighbouring stickers cannot bleed in: a flood fill from
+inside the banner, then every pixel outside that component forced transparent. The true
+artwork is 636x309, saved with a 6 px margin as 648x321. To redo it, re-run the same
+connected-component extraction rather than cropping a rectangle.
+
 ## Runtime trim
 
 Runtime-referenced PNGs were inspected with Pillow. Trimmed files use the substantial-alpha (alpha >= 8) artwork bounds plus a 5% per-side transparent margin (minimum 4 px); the original nonzero-alpha fringe was retained when it fell within that margin. Files already within those conservative bounds were skipped. No source sheets were modified.
 
 | Asset | Before | Before alpha bbox | After | After alpha bbox | Result |
 | --- | ---: | --- | ---: | --- | --- |
-| `branding/poppy-soundboard-logo.png` | 628x315 | (4,4)-(624,311) | 628x315 | (4,4)-(624,311) | Skipped, tight |
+| `branding/poppy-soundboard-logo.png` | 628x315 | (4,4)-(624,311) | 628x315 | (4,4)-(624,311) | Skipped, tight — later re-extracted, see above |
 | `ui/action-upload.png` | 153x154 | (4,4)-(149,150) | 144x154 | (0,4)-(140,150) | Trimmed |
 | `ui/action-delete.png` | 143x162 | (4,4)-(139,158) | 143x155 | (4,4)-(139,155) | Trimmed |
 | `ui/action-add.png` | 105x156 | (4,4)-(101,152) | 105x156 | (4,4)-(101,152) | Skipped, tight |

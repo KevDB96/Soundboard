@@ -1,6 +1,6 @@
 // App-shell cache so the board still loads offline. Sound/background blobs live in
 // IndexedDB (see js/storage.js) and don't need to go through this cache.
-const CACHE_NAME = 'soundboard-shell-v15-profile-gear';
+const CACHE_NAME = 'soundboard-shell-v16-full-logo';
 const APP_SHELL = [
   './',
   'index.html',
